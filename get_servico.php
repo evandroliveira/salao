@@ -3,15 +3,6 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/config.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode([
-        'sucesso' => false,
-        'mensagem' => 'Metodo nao permitido.'
-    ]);
-    exit;
-}
-
 if (!$conexao) {
     http_response_code(500);
     echo json_encode([
@@ -21,7 +12,7 @@ if (!$conexao) {
     exit;
 }
 
-$idBruto = $_POST['id_cliente'] ?? $_POST['id'] ?? null;
+$idBruto = $_GET['id_servico'] ?? $_GET['id'] ?? null;
 $id = filter_var($idBruto, FILTER_VALIDATE_INT, [
     'options' => ['min_range' => 1]
 ]);
@@ -36,25 +27,29 @@ if ($id === false) {
 }
 
 try {
-    $stmt = $conexao->prepare('DELETE FROM clientes WHERE id_cliente = :id');
+    $stmt = $conexao->prepare('SELECT id_servico, nome_servico, preco, duracao_minutos FROM servicos WHERE id_servico = :id LIMIT 1');
     $stmt->execute([':id' => $id]);
+    $servico = $stmt->fetch();
 
-    if ($stmt->rowCount() === 0) {
+    if (!$servico) {
+        http_response_code(404);
         echo json_encode([
             'sucesso' => false,
-            'mensagem' => 'Cliente nao encontrado.'
+            'mensagem' => 'Serviço nao encontrado.'
         ]);
         exit;
     }
 
     echo json_encode([
-        'sucesso' => true,
-        'mensagem' => 'Cliente removido com sucesso.'
+        'id_servico' => (int) $servico['id_servico'],
+        'nome_servico' => $servico['nome_servico'],
+        'preco' => (float) $servico['preco'],
+        'duracao_minutos' => (int) $servico['duracao_minutos'],
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
         'sucesso' => false,
-        'mensagem' => 'Erro ao deletar cliente: ' . $e->getMessage()
+        'mensagem' => 'Erro ao buscar serviço: ' . $e->getMessage()
     ]);
 }

@@ -44,7 +44,10 @@ font-size: 20px;
           <a class="nav-link" href="clientes.php">Clientes</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Serviços</a>
+          <a class="nav-link" href="servicos.php">Serviços</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="profissionais.php">Profissionais</a>
         </li>
       </ul>
     </div>

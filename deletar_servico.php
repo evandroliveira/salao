@@ -21,7 +21,7 @@ if (!$conexao) {
     exit;
 }
 
-$idBruto = $_POST['id_cliente'] ?? $_POST['id'] ?? null;
+$idBruto = $_POST['id_servico'] ?? $_POST['id'] ?? null;
 $id = filter_var($idBruto, FILTER_VALIDATE_INT, [
     'options' => ['min_range' => 1]
 ]);
@@ -36,25 +36,25 @@ if ($id === false) {
 }
 
 try {
-    $stmt = $conexao->prepare('DELETE FROM clientes WHERE id_cliente = :id');
+    $stmt = $conexao->prepare('DELETE FROM servicos WHERE id_servico = :id');
     $stmt->execute([':id' => $id]);
 
     if ($stmt->rowCount() === 0) {
         echo json_encode([
             'sucesso' => false,
-            'mensagem' => 'Cliente nao encontrado.'
+            'mensagem' => 'Serviço nao encontrado.'
         ]);
         exit;
     }
 
     echo json_encode([
         'sucesso' => true,
-        'mensagem' => 'Cliente removido com sucesso.'
+        'mensagem' => 'Serviço removido com sucesso.'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
         'sucesso' => false,
-        'mensagem' => 'Erro ao deletar cliente: ' . $e->getMessage()
+        'mensagem' => 'Erro ao deletar serviço: ' . $e->getMessage()
     ]);
 }
