@@ -21,7 +21,9 @@ if (!$conexao) {
     exit;
 }
 
-$id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+$id = isset($_POST['id_cliente'])
+    ? (int) $_POST['id_cliente']
+    : (isset($_POST['id']) ? (int) $_POST['id'] : 0);
 $nome = trim($_POST['nome'] ?? '');
 $telefone = trim($_POST['telefone'] ?? '');
 $email = trim($_POST['email'] ?? '');
@@ -36,7 +38,7 @@ if ($nome === '') {
 
 try {
     if ($id > 0) {
-        $stmt = $conexao->prepare('UPDATE clientes SET nome = :nome, telefone = :telefone, email = :email WHERE id = :id');
+        $stmt = $conexao->prepare('UPDATE clientes SET nome = :nome, telefone = :telefone, email = :email WHERE id_cliente = :id');
         $stmt->execute([
             ':nome' => $nome,
             ':telefone' => $telefone !== '' ? $telefone : null,
@@ -61,7 +63,8 @@ try {
     echo json_encode([
         'sucesso' => true,
         'mensagem' => 'Cliente cadastrado com sucesso.',
-        'id' => (int) $conexao->lastInsertId()
+        'id' => (int) $conexao->lastInsertId(),
+        'id_cliente' => (int) $conexao->lastInsertId()
     ]);
 } catch (PDOException $e) {
     http_response_code(500);

@@ -12,7 +12,9 @@ if (!$conexao) {
     exit;
 }
 
-$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$id = isset($_GET['id_cliente'])
+    ? (int) $_GET['id_cliente']
+    : (isset($_GET['id']) ? (int) $_GET['id'] : 0);
 
 if ($id <= 0) {
     http_response_code(400);
@@ -24,7 +26,7 @@ if ($id <= 0) {
 }
 
 try {
-    $stmt = $conexao->prepare('SELECT id, nome, telefone, email FROM clientes WHERE id = :id LIMIT 1');
+    $stmt = $conexao->prepare('SELECT id_cliente, nome, telefone, email FROM clientes WHERE id_cliente = :id LIMIT 1');
     $stmt->execute([':id' => $id]);
     $cliente = $stmt->fetch();
 

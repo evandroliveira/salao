@@ -17,27 +17,7 @@ $clientes = $result ? $result->fetchAll() : [];
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">Salão</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="clientes.php">Clientes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="servicos.php">Serviços</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Sair</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php require __DIR__ . '/menu.php'; ?>
 
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -96,7 +76,7 @@ $clientes = $result ? $result->fetchAll() : [];
                 </div>
                 <form id="formCliente">
                     <div class="modal-body">
-                        <input type="hidden" id="clienteId" name="id">
+                        <input type="hidden" id="clienteId" name="id_cliente">
                         
                         <div class="mb-3">
                             <label for="clienteNome" class="form-label">Nome *</label>
@@ -136,8 +116,8 @@ $clientes = $result ? $result->fetchAll() : [];
         });
 
         // Carregar dados do cliente para edição
-        function carregarCliente(id) {
-            fetch('get_cliente.php?id=' + id)
+        function carregarCliente(id_cliente) {
+            fetch('get_cliente.php?id_cliente=' + id_cliente)
                 .then(async response => {
                     const data = await response.json();
                     if (!response.ok) {
@@ -146,7 +126,7 @@ $clientes = $result ? $result->fetchAll() : [];
                     return data;
                 })
                 .then(data => {
-                    document.getElementById('clienteId').value = data.id;
+                    document.getElementById('clienteId').value = data.id_cliente;
                     document.getElementById('clienteNome').value = data.nome;
                     document.getElementById('clienteTelefone').value = data.telefone || '';
                     document.getElementById('clienteEmail').value = data.email || '';
@@ -191,14 +171,14 @@ $clientes = $result ? $result->fetchAll() : [];
         });
 
         // Deletar cliente
-        function deletarCliente(id) {
+        function deletarCliente(id_cliente) {
             if (confirm('Tem certeza que deseja deletar este cliente?')) {
                 fetch('deletar_cliente.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: new URLSearchParams({ id_cliente: id })
+                    body: new URLSearchParams({ id_cliente })
                 })
                 .then(async response => {
                     const data = await response.json();

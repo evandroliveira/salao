@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir'])) {
     $id = $_POST['id'];
     
-    $sql = "DELETE FROM profissionais WHERE id_profissional = ?";
+    $sql = "DELETE FROM profissionais WHERE id = ?";
     $stmt = $conexao->prepare($sql);
     $stmt->execute([$id]);
     
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir'])) {
 $profissionalEdicao = null;
 if (isset($_GET['editar'])) {
     $id = $_GET['editar'];
-    $sql = "SELECT * FROM profissionais WHERE id_profissional = ?";
+    $sql = "SELECT * FROM profissionais WHERE id = ?";
     $stmt = $conexao->prepare($sql);
     $stmt->execute([$id]);
     $profissionalEdicao = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -67,6 +67,8 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <?php require __DIR__ . '/menu.php'; ?>
+
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Profissionais</h1>
@@ -89,16 +91,16 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <tbody>
                     <?php foreach ($profissionais as $profissional): ?>
                     <tr>
-                        <td><?php echo $profissional['id_profissional']; ?></td>
+                        <td><?php echo $profissional['id']; ?></td>
                         <td><?php echo htmlspecialchars($profissional['nome']); ?></td>
                         <td><?php echo htmlspecialchars($profissional['especialidade']); ?></td>
                         <td>
                             <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEdicao"
-                                onclick="editarProfissional(<?php echo $profissional['id_profissional']; ?>, '<?php echo htmlspecialchars($profissional['nome']); ?>', '<?php echo htmlspecialchars($profissional['especialidade']); ?>')">
+                                onclick="editarProfissional(<?php echo $profissional['id']; ?>, '<?php echo htmlspecialchars($profissional['nome']); ?>', '<?php echo htmlspecialchars($profissional['especialidade']); ?>')">
                                 Editar
                             </button>
                             <form method="POST" style="display:inline;">
-                                <input type="hidden" name="id" value="<?php echo $profissional['id_profissional']; ?>">
+                                <input type="hidden" name="id" value="<?php echo $profissional['id']; ?>">
                                 <button type="submit" name="excluir" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
                                     Excluir
                                 </button>
