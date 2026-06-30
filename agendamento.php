@@ -1,7 +1,7 @@
 <?php
 // id_agendamento	id_cliente	id_profissional	id_servico	data_hora	status
 require_once 'config.php';
-
+// normalizar data e hora para o formato do banco de dados
 function normalizarDataHora(?string $dataHora): ?string
 {
     if ($dataHora === null || $dataHora === '') {
