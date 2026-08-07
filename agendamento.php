@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 // id_agendamento	id_cliente	id_profissional	id_servico	data_hora	status
 require_once 'config.php';
 // normalizar data e hora para o formato do banco de dados
@@ -47,7 +49,7 @@ function buscarConflitoAgendamento(PDO $conexao, int $idProfissional, string $in
         s.nome_servico
     FROM agendamentos a
     INNER JOIN clientes c ON a.id_cliente = c.id_cliente
-    INNER JOIN profissionais p ON a.id_profissional = p.id
+    INNER JOIN profissionais p ON a.id_profissional = p.id_profissional
     INNER JOIN servicos s ON a.id_servico = s.id_servico
     WHERE a.id_profissional = :id_profissional
       AND a.status <> 'cancelado'
@@ -131,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['adicionar']) || isse
                     $erroAgendamento = sprintf(
                         'O profissional %s ja possui um agendamento de %s para %s entre %s e %s.',
                         $conflito['profissional_nome'],
-                        $conflito['servico_nome'],
+                        $conflito['nome_servico'],
                         $conflito['cliente_nome'],
                         date('d/m/Y H:i', strtotime($conflito['data_hora'])),
                         date('d/m/Y H:i', strtotime($conflito['data_hora_fim']))
@@ -179,7 +181,7 @@ $sql = "SELECT
     a.status
 FROM agendamentos a
 INNER JOIN clientes c ON a.id_cliente = c.id_cliente
-INNER JOIN profissionais p ON a.id_profissional = p.id
+INNER JOIN profissionais p ON a.id_profissional = p.id_profissional
 INNER JOIN servicos s ON a.id_servico = s.id_servico
 ORDER BY a.data_hora DESC";
 $result = $conexao->query($sql);
@@ -187,7 +189,7 @@ $agendamentos = $result->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar clientes, profissionais e serviços para o formulário
 $clientes = $conexao->query("SELECT id_cliente, nome FROM clientes ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
-$profissionais = $conexao->query("SELECT id, nome FROM profissionais ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
+$profissionais = $conexao->query("SELECT id_profissional, nome FROM profissionais ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
 $servicos = $conexao->query("SELECT id_servico, nome_servico FROM servicos ORDER BY nome_servico")->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar agendamento para edição se solicitado
@@ -276,8 +278,8 @@ $statusSelecionado = $formAgendamento['status'] ?? 'pendente';
                                 <select class="form-select" id="id_profissional" name="id_profissional" required>
                                     <option value="">Selecione um profissional</option>
                                     <?php foreach ($profissionais as $profissional): ?>
-                                        <option value="<?php echo $profissional['id']; ?>"
-                                            <?php echo ($formAgendamento && (int) $formAgendamento['id_profissional'] === (int) $profissional['id']) ? 'selected' : ''; ?>>
+                                        <option value="<?php echo $profissional['id_profissional']; ?>"
+                                            <?php echo ($formAgendamento && (int) $formAgendamento['id_profissional'] === (int) $profissional['id_profissional']) ? 'selected' : ''; ?>>
                                             <?php echo $profissional['nome']; ?>
                                         </option>
                                     <?php endforeach; ?>

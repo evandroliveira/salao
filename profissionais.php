@@ -91,16 +91,16 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <tbody>
                     <?php foreach ($profissionais as $profissional): ?>
                     <tr>
-                        <td><?php echo $profissional['id']; ?></td>
+                        <td><?php echo $profissional['id_profissional']; ?></td>
                         <td><?php echo htmlspecialchars($profissional['nome']); ?></td>
                         <td><?php echo htmlspecialchars($profissional['especialidade']); ?></td>
                         <td>
                             <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEdicao"
-                                onclick="editarProfissional(<?php echo $profissional['id']; ?>, '<?php echo htmlspecialchars($profissional['nome']); ?>', '<?php echo htmlspecialchars($profissional['especialidade']); ?>')">
+                                onclick="editarProfissional(<?php echo $profissional['id_profissional']; ?>, '<?php echo htmlspecialchars($profissional['nome']); ?>', '<?php echo htmlspecialchars($profissional['especialidade']); ?>')">
                                 Editar
                             </button>
                             <form method="POST" style="display:inline;">
-                                <input type="hidden" name="id" value="<?php echo $profissional['id']; ?>">
+                                <input type="hidden" name="id" value="<?php echo $profissional['id_profissional']; ?>">
                                 <button type="submit" name="excluir" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
                                     Excluir
                                 </button>

@@ -39,7 +39,7 @@ $itensMenu = [
         <?php foreach ($itensMenu as $item): ?>
           <?php $ativo = in_array($paginaAtual, $item['rotas'], true); ?>
           <li class="nav-item">
-            <a class="nav-link<?php echo $ativo ? ' active' : ''; ?>" <?php echo $ativo ? 'aria-current="page"' : ''; ?> href="<?php echo $item['href']; ?>">
+            <a class="nav-link<?php echo $ativo ? ' active' : ''; ?>" <?php echo $ativo ? ' aria-current="page"' : ''; ?> href="<?php echo $item['href']; ?>">
               <?php echo $item['rotulo']; ?>
             </a>
           </li>

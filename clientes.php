@@ -3,7 +3,7 @@ session_start();
 include 'config.php';
 
 // Buscar clientes
-$sql = "SELECT * FROM clientes ORDER BY nome";
+$sql = "SELECT * FROM vw_cliente";
 $result = $conexao->query($sql);
 $clientes = $result ? $result->fetchAll() : [];
 ?>
