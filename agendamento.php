@@ -232,13 +232,15 @@ $statusSelecionado = $formAgendamento['status'] ?? 'pendente';
 <body>
     <?php require __DIR__ . '/menu.php'; ?>
 
-    <div class="container-fluid">
-        <h1 class="mb-4">Agendamentos</h1>
+    <div class="container my-5">
 
         <!-- Botão Modal para Adicionar -->
-        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalAgendamento">
-            <i class="bi bi-plus"></i> Novo Agendamento
-        </button>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Agendamentos</h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgendamento">
+                <i class="bi bi-plus-circle"></i> + Novo Agendamento
+            </button>
+        </div>
 
         <!-- Modal -->
         <div class="modal fade" id="modalAgendamento" tabindex="-1">

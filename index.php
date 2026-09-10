@@ -28,6 +28,7 @@ border-radius: 5px; font-size: 20px; }
 </style> 
 </head> 
 <body> 
+
 <?php require_once __DIR__ . '/menu.php'; ?>
 <div class="container mt-5">
 <div class="status"> <?php echo $mensagem ?? "Mensagem indisponivel."; ?> </div> 

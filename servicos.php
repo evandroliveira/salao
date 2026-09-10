@@ -2,7 +2,7 @@
 session_start();
 include 'config.php';
 
-$sql = 'SELECT id_servico, nome_servico, preco, duracao_minutos FROM servicos ORDER BY nome_servico';
+$sql = 'SELECT * FROM vw_servico';
 $result = $conexao->query($sql);
 $servicos = $result ? $result->fetchAll() : [];
 ?>

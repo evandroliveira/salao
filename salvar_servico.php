@@ -92,7 +92,7 @@ try {
         exit;
     }
 
-    $stmt = $conexao->prepare('INSERT INTO servicos (nome_servico, preco, duracao_minutos) VALUES (:nome_servico, :preco, :duracao_minutos)');
+    $stmt = $conexao->prepare('CALL novo_servico(:nome_servico, :preco, :duracao_minutos)');
     $stmt->execute([
         ':nome_servico' => $nome,
         ':preco' => $preco,

@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['adicionar'])) {
     $nome = $_POST['nome'];
     $especialidade = $_POST['especialidade'];
     
-    $sql = "INSERT INTO profissionais (nome, especialidade) VALUES (?, ?)";
+    $sql = "CALL add_profissional(?, ?)";
     $stmt = $conexao->prepare($sql);
     $stmt->execute([$nome, $especialidade]);
     
@@ -20,10 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar'])) {
     $id = $_POST['id'];
     $nome = $_POST['nome'];
     $especialidade = $_POST['especialidade'];
+    $celular = $_POST['celular'];
     
-    $sql = "UPDATE profissionais SET nome = ?, especialidade = ? WHERE id = ?";
+    $sql = "UPDATE profissionais SET nome = ?, especialidade = ?, celular = ? WHERE id_profissional = ?";
     $stmt = $conexao->prepare($sql);
-    $stmt->execute([$nome, $especialidade, $id]);
+    $stmt->execute([$nome, $especialidade, $celular, $id]);
     
     header("Location: profissionais.php");
     exit;
@@ -33,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir'])) {
     $id = $_POST['id'];
     
-    $sql = "DELETE FROM profissionais WHERE id = ?";
+    $sql = "DELETE FROM profissionais WHERE id_profissional = ?";
     $stmt = $conexao->prepare($sql);
     $stmt->execute([$id]);
     
@@ -45,14 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir'])) {
 $profissionalEdicao = null;
 if (isset($_GET['editar'])) {
     $id = $_GET['editar'];
-    $sql = "SELECT * FROM profissionais WHERE id = ?";
+    $sql = "SELECT * FROM profissionais WHERE id_profissional = ?";
     $stmt = $conexao->prepare($sql);
     $stmt->execute([$id]);
     $profissionalEdicao = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Listar profissionais
-$sql = "SELECT * FROM profissionais ORDER BY nome";
+$sql = "SELECT * FROM vw_profissionais ORDER BY nome";
 $stmt = $conexao->prepare($sql);
 $stmt->execute();
 $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -69,7 +70,7 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php require __DIR__ . '/menu.php'; ?>
 
-    <div class="container mt-5">
+    <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Profissionais</h1>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProfissional">
@@ -85,6 +86,7 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>ID</th>
                         <th>Nome</th>
                         <th>Especialidade</th>
+                        <th>Celular</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -94,9 +96,10 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo $profissional['id_profissional']; ?></td>
                         <td><?php echo htmlspecialchars($profissional['nome']); ?></td>
                         <td><?php echo htmlspecialchars($profissional['especialidade']); ?></td>
+                        <td><?php echo htmlspecialchars($profissional['celular']); ?></td>
                         <td>
                             <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEdicao"
-                                onclick="editarProfissional(<?php echo $profissional['id_profissional']; ?>, '<?php echo htmlspecialchars($profissional['nome']); ?>', '<?php echo htmlspecialchars($profissional['especialidade']); ?>')">
+                                onclick="editarProfissional(<?php echo $profissional['id_profissional']; ?>, '<?php echo htmlspecialchars($profissional['nome']); ?>', '<?php echo htmlspecialchars($profissional['especialidade']); ?>', '<?php echo htmlspecialchars($profissional['celular']); ?>')">
                                 Editar
                             </button>
                             <form method="POST" style="display:inline;">
@@ -131,6 +134,11 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <label for="especialidade" class="form-label">Especialidade</label>
                             <input type="text" class="form-control" id="especialidade" name="especialidade" required>
                         </div>
+                        
+                        <div class="mb-3">
+                            <label for="celular" class="form-label">Celular</label>
+                            <input type="text" class="form-control" id="celular" name="celular" required>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -160,6 +168,10 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <label for="editEspecialidade" class="form-label">Especialidade</label>
                             <input type="text" class="form-control" id="editEspecialidade" name="especialidade" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="editCelular" class="form-label">Celular</label>
+                            <input type="text" class="form-control" id="editCelular" name="celular" required>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -172,10 +184,11 @@ $profissionais = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function editarProfissional(id, nome, especialidade) {
+        function editarProfissional(id, nome, especialidade, celular) {
             document.getElementById('editId').value = id;
             document.getElementById('editNome').value = nome;
             document.getElementById('editEspecialidade').value = especialidade;
+            document.getElementById('editCelular').value = celular;
         }
     </script>
 </body>
